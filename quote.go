@@ -1,5 +1,12 @@
 package main
 
+type Quote struct {
+	Content      string `json:"content"`
+	Author       string `json:"author"`
+	DateAdded    string `json:"dateAdded"`
+	DateModified string `json:"dateModified"`
+}
+
 type QuoteData struct {
 	Id         string   `json:"id"`
 	Quote      string   `json:"quote"`

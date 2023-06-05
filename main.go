@@ -32,7 +32,7 @@ func quoteOfTheDayHandler(client *redis.Client) http.HandlerFunc {
 				w.Write([]byte("Sorry! We could not get the Quote of the Day. Please try again."))
 				return
 			}
-			quote := quoteResp.Contents.Quotes[0].Quote
+			quote := quoteResp.Content
 			client.Set(date, quote, 24*time.Hour)
 			w.Write([]byte(quote))
 		} else {
@@ -102,8 +102,8 @@ func waitForShutdown(srv *http.Server) {
 	os.Exit(0)
 }
 
-func getQuoteFromAPI() (*QuoteResponse, error) {
-	API_URL := "http://quotes.rest/qod.json"
+func getQuoteFromAPI() (*Quote, error) {
+	API_URL := "https://api.quotable.io/random"
 	resp, err := http.Get(API_URL)
 	if err != nil {
 		return nil, err
@@ -112,7 +112,7 @@ func getQuoteFromAPI() (*QuoteResponse, error) {
 	log.Println("Quote API Returned: ", resp.StatusCode, http.StatusText(resp.StatusCode))
 
 	if resp.StatusCode >= 200 && resp.StatusCode <= 299 {
-		quoteResp := &QuoteResponse{}
+		quoteResp := &Quote{}
 		json.NewDecoder(resp.Body).Decode(quoteResp)
 		return quoteResp, nil
 	} else {
